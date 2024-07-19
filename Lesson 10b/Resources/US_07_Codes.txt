@@ -1,0 +1,152 @@
+Code snippets for User Story 7 (Return an item)
+==========================================================================================
+
+1.Below is the code for the user interface.
+
+                # TO-DO: Write the code to RETURN a digital camera or laptop
+                if option == 1:
+                    # Refactor (F): create and use proper method to display loaned camera.
+                    # Don't forget to create a pytest for this new method.
+                    print("{:<10}{:<30}{:<10}{:<12}{:<10}".format("AssetTag", 
+                          "Description", "Available", "Due Date", "Zoom"))
+                    for i in self.inventory.cameraList:
+                        if i.getIsAvailable() == "No":
+                            print("{:<10}{:<30}{:<10}{:<12}{:<10}".format(i.getAssetTag(), \
+                            i.getDescription() , i.getIsAvailable(), i.getDueDate(), i.getOpticalZoom()))
+
+                    assetTag = input("Enter asset tag >")
+
+                    result = self.inventory.returnCamera(assetTag)
+
+                    if result:
+                        print("Camera",assetTag,"successfully returned.")
+                    else:
+                        print("Error returning camera.")
+                elif option == 2:
+                    # Refactor (F): create and use proper method to display loaned Laptop.
+                    # Don't forget to create a pytest for this new method.
+                    print("{:<10}{:<30}{:<10}{:<12}{:<10}".format("AssetTag", 
+                          "Description", "Available", "Due Date", "OS"))
+                    for i in self.inventory.laptopList:
+                        if i.getIsAvailable() == "No":
+                            print("{:<10}{:<30}{:<10}{:<12}{:<10}".format(i.getAssetTag(), \
+                            i.getDescription() , i.getIsAvailable(), i.getDueDate(), i.getOs() ))
+
+                    assetTag = input("Enter asset tag >")
+
+                    result = self.inventory.returnLaptop(assetTag)
+
+                    if result:
+                        print("Laptop",assetTag,"successfully returned.")
+                    else:
+                        print("Error returning laptop.")
+                else:
+                    print("Invalid item type.")
+
+=========================================================================================
+
+2.Below is the unit test cases for returnCamera() and returnLaptop() methods.
+
+from inventory.inventory import Inventory
+
+class Test_US_07:
+    ############### Test return camera ######################
+    def test_return_camera_onLoan(self):
+        test_inventory = Inventory()
+        result = test_inventory.addCamera("C001", "Test camera 1", 5)
+        tested_camera = test_inventory.cameraList[0]
+        result = test_inventory.loanCamera(tested_camera.getAssetTag(), "08-08-2030")
+        assert result == True
+        assert tested_camera.getDueDate() == "08-08-2030"
+        assert tested_camera.getIsAvailable() == "No"
+
+        result2 = test_inventory.returnCamera(tested_camera.getAssetTag())
+
+        assert result2 == True
+        assert tested_camera.getDueDate() == ""
+        assert tested_camera.getIsAvailable() == "Yes"
+
+    def test_return_camera_not_onLoan(self):
+        test_inventory = Inventory()
+        result = test_inventory.addCamera("C001", "Test camera 1", 5)
+        tested_camera = test_inventory.cameraList[0]
+
+        result = test_inventory.returnCamera(tested_camera.getAssetTag())
+
+        assert result == False
+        assert tested_camera.getDueDate() == ""
+        assert tested_camera.getIsAvailable() == "Yes"
+
+    def test_return_camera_not_exists(self):
+        test_inventory = Inventory()
+        result = test_inventory.addCamera("C001", "Test camera 1", 5)
+        
+        result = test_inventory.returnCamera("C003")
+        
+        assert result == False
+
+    ############### Test return laptop ######################
+    def test_return_laptop_onLoan(self):
+        test_inventory = Inventory()
+        result = test_inventory.addLaptop("L001", "Test Laptop 1", "WINXP")
+        tested_laptop = test_inventory.laptopList[0]
+        result = test_inventory.loanLaptop(tested_laptop.getAssetTag(), "08-08-2030")
+        assert result == True
+        assert tested_laptop.getDueDate() == "08-08-2030"
+        assert tested_laptop.getIsAvailable() == "No"
+
+        result2 = test_inventory.returnLaptop(tested_laptop.getAssetTag())
+        assert result2 == True
+        assert tested_laptop.getDueDate() == ""
+        assert tested_laptop.getIsAvailable() == "Yes"
+
+
+    def test_return_laptop_not_onLoan(self):
+        test_inventory = Inventory()
+        result = test_inventory.addLaptop("L001", "Test Laptop 1", "WINXP")
+        tested_laptop = test_inventory.laptopList[0]
+
+        result = test_inventory.returnLaptop(tested_laptop.getAssetTag())
+        
+        assert result == False
+        assert tested_laptop.getDueDate() == ""
+        assert tested_laptop.getIsAvailable() == "Yes"
+
+    def test_return_laptop_not_exists(self):
+        test_inventory = Inventory()
+        result = test_inventory.addLaptop("L001", "Test Laptop 1", "WINXP")
+        
+        result = test_inventory.returnLaptop("L003")
+        
+        assert result == False    
+
+==========================================================================================
+
+3.Below are the codes for returnCamera() and returnLaptop() methods.
+
+    def returnCamera(self, assetTag):
+        success = False
+        if len(assetTag) > 0:
+            # Refactor (C): use findcamera()
+            for i in self.cameraList:
+                if i.getAssetTag() == assetTag:
+                    if i.getIsAvailable() == "No":
+                        i.setIsAvailable(True)
+                        i.setDueDate("")
+                        success = True
+        
+        return success
+    
+    def returnLaptop(self, assetTag):
+        success = False
+        if len(assetTag) > 0:
+            # Refactor (C): use findcamera()
+            for i in self.laptopList:
+                if i.getAssetTag() == assetTag:
+                    if i.getIsAvailable() == "No":
+                        i.setIsAvailable(True)
+                        i.setDueDate("")
+                        success = True
+        
+        return success
+

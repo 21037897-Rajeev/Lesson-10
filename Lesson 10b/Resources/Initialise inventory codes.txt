@@ -1,0 +1,15 @@
+Replace the __init__(self) method in the inventory.py with the codes below.
+The code below add 3 cameras and laptops into the inventory for testing purpose.
+====================================================================================
+
+    def __init__(self):
+        ## Prepare the data (Inventory list)
+        self.inventory = Inventory()
+
+        self.inventory.addCamera("C001", "Nikon COOLPIX L32", 5)
+        self.inventory.addCamera("C002", "Canon PowerShot A4000 IS", 8)
+        self.inventory.addCamera("C003", "Olympus TG-6 Tough", 4)
+
+        self.inventory.addLaptop("L001", "Lenovo Yoga Pro 7", "WIN11")
+        self.inventory.addLaptop("L002", "ASUS Vivobook", "WIN11HOME")
+        self.inventory.addLaptop("L003", "HP Pavilion Plus 14", "WIN11")
